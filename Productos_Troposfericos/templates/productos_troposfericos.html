@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+
+{% load static %}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Productos Troposfericos</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/mystyle.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/productos_troposfericos_css.css' %}">
+    <!-- ESTILOS Y JAVASCRIPT COMUNES -->
+
+    <!-- Proxy de bootsrap.css para funcione respond.js con IE8 -->
+    <link rel="stylesheet" href="https://ingenieria.uncuyo.edu.ar/bootstrap.css">
+    <link rel="stylesheet" href="https://prueba.uncuyo.edu.ar/modular_3/assets/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <script type="text/javascript" src="{% static 'js/productos_troposfericos_js.js' %}"></script>
+
+
+
+    <link rel="stylesheet" href="{% static 'css/ol.css' %}">
+    <script type="text/javascript" src="{% static 'js/proj4.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/ol-debug.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/mapa_js.js' %}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+
+    <style type="text/css">
+            .ccontent {
+                color: #000000;
+                font-family: courier;
+                font-size: 12px;
+                text-align: justify;
+            }
+
+            .ccontent A {
+                color: #022d9a;
+                font-family: courier;
+                font-size: 12px;
+                text-decoration: none;
+            }
+
+            .ccontent A:hover {
+                color: #022d9a;
+                font-family: courier;
+                font-size: 12px;
+                text-decoration: none;
+            }
+
+            .ccontent A:active {
+                color: #022d9a;
+                font-family: courier;
+                font-size: 12px;
+                text-decoration: none;
+            }
+
+            .ccontent A:visited {
+                color: #022d9a;
+                font-family: courier;
+                font-size: 12px;
+                text-decoration: none;
+            }
+
+            .tooltip {
+                background-color: #ffe4e4;
+                font-family: sans-serif;
+                font-size: 10px;
+                border: 2px #990000 solid;
+            }
+
+
+            #simple_example_window {
+                width: 775px;
+            }
+
+            #simple_example_window_contents {
+                background-color: #FFF;
+            }
+
+            #custom_info_window_red_beak {
+                width: 28px;
+                height: 38px;
+                background: url("../examples/images/corners/red_beak.png") top left no-repeat transparent;
+            }
+
+            * html #simple_example_window_beak {
+                /* Alpha transparencies hack for IE */
+                background-image: none;
+                filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../examples/images/corners/red_beak.png", sizingMethod="crop");
+            }
+
+            #simple_example_window_tl,
+            #simple_example_window_tr,
+            #simple_example_window_bl,
+            #simple_example_window_br,
+            #simple_example_window_t,
+            #simple_example_window_l,
+            #simple_example_window_r,
+            #simple_example_window_b {
+                background-color: #F00;
+                height: 2px;
+                width: 2px;
+            }
+
+
+            .popup {
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              padding: 20px;
+              background-color: rgba(0,0,0,0.5);
+              display: none;
+              justify-content: center;
+              align-items: center;
+            }
+
+            .popup-content {
+              background-color: #dbfcdc;
+              padding: 20px;
+              border-radius: 5px;
+            }
+
+        </style>
+
+
+
+</head>
+
+<body>
+    <div class="titular">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <h1 class="titular_titulo">Productos Troposfericos</h1>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <p class="myalert" id="alert2" style="margin-bottom: 0px;" hidden>Las siguientes estaciones no se encuentran en nuestra base de datos:
+        <span class="closebtn">&times;</span>
+    </p>
+
+    <p class="myalert" id="alert1" style="margin-bottom: 0px;" hidden>No hay datos de las estaciones seleccionadas en el periodo seleccionado
+        <span class="closebtn">&times;</span>
+    </p>
+
+    <script>
+        var close = document.getElementsByClassName("closebtn");
+        var i;
+
+        for (i = 0; i < close.length; i++) {
+            close[i].onclick = function() {
+                var div = this.parentElement;
+                div.style.opacity = "0";
+                setTimeout(function() {
+                    div.style.display = "none";
+                }, 600);
+            }
+        }
+    </script>
+
+    <div class="container" id="marco">
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Buscador </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td scope="row">
+                                
+                                <div class='col-md-6'>
+                                    <div class="form-group">
+                                        <label for="Fecha_desde" class="form-label">Desde:</label>
+                                        <div class='date'>
+                                            <input class="form-control" 
+                                                type="datetime-local"
+                                                value="2023-06-18T00:00"
+                                                id="Fecha_desde"
+                                                name="Fecha_desde"
+                                                placeholder="dd/mm/yyyy hh:mm:ss">
+                                        </div>
+                                        <small style="color:#FF0000" ;></small>
+                                    </div>
+                                </div>
+
+                                <div class='col-md-6 '>
+                                    <div class="form-group">
+                                        <label for="Fecha_hasta" class="form-label">Hasta:</label>
+                                        <div class='date'>
+                                            <input class="form-control"
+                                                type="datetime-local"
+                                                value="2023-06-18T17:00"
+                                                id="Fecha_hasta"
+                                                name="Fecha_hasta">
+                                        </div>
+                                        <small style="color:#FF0000" ;></small>
+                                    </div>
+                                </div>
+
+                                <div class='col-md-12'>
+                                  
+                                  <label for="Estaciondiv" class="form-label">Agregar Estación por Nombre:</label>
+                                  <div class="row" style="padding: 0px 20px;">
+                                    <div class="col-md-9">
+                                      <div id="div_estaciones" >
+                                        <div class="form-group" id="Estaciondiv">
+                                          <input class="form-control" type="text" placeholder="Ingrese la estación AAAA" list="estaciones_list_data" id="input_Estacion">
+                                          <datalist id="estaciones_list_data"></datalist>
+                                        </div>
+                                        <small style="color:#FF0000"></small>
+                                      </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                      <button type="button" onclick="agregar_estacion_por_nombre()" class="btn btn-info" style="width: 100%;">Agregar</button>
+                                    </div>
+                                  </div>
+
+
+                                    <label for="Estaciondiv" class="form-label">Agregar Estacion por Rango Latitud/Longitud</label>
+                                    <div id="div_estaciones_rango" style="padding: 0px 20px;">
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Latitud:</label>
+                                                <div class='date'>
+                                                    <input class="form-control" type="text" id="LatitudNorte" placeholder="Desde [-90;90]">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6" style="margin-top: 5px;">
+                                                <label class="form-label"> </label>
+                                                <div class='date'>
+                                                    <input class="form-control" type="text" id="LatitudSur" placeholder="Hasta [-90;90] ">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Longitud:</label>
+                                                <div class='date'>
+                                                    <input class="form-control" type="text" id="LongitudEste" placeholder="Desde  [-180;180]">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6" style="margin-top: 5px;">
+                                                <label class="form-label"> </label>
+                                                <div class='date'>
+                                                    <input class="form-control" type="text" id="LongitudOeste" placeholder="Hasta [-180;180]">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+
+                                    <div style="margin-top:10px; padding: 0px 20px; ">
+                                      <button type="button" onclick="agregar_estacion_por_rango_latitud_longitud()" class="btn btn-info" >Agregar</button>
+                                    </div>
+                                    
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td id="estaciones_de_busqueda" scope="row">
+                                <button id="button_estacion" style="margin: 1px;" hidden></span>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td scope="row">
+                                <div class="row"  style="float:none;margin:auto;">
+                                    <div class='col-md-3' id="hh">
+                                        <div class="form-group">
+                                            <input type="checkbox" id="presion">
+                                            <label for="Presion">
+                                                Presión
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class='col-md-4'>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="temperatura">
+                                            <label for="Temperatura">
+                                                Temperatura
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class='col-md-2'>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="IWV">
+                                            <label for="IWV">
+                                                IWV
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class='col-md-3'>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="ZTD">
+                                            <label for="ZTD">
+                                                ZTD
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <small style="color:#FF0000; float:none;margin:auto;"></small>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td scope="row">
+                                <div class="d-grid">
+                                    <input type="hidden" name="oculto" value="1">
+                                    <!--
+                                    <input type="submit" class="btn btn-primary" value="Buscar"> -->
+                                    <button class="btn btn-primary" onclick="busqueda_productos_troposfericos()">Buscar</button>
+                                </div>
+                            </td>
+                        </tr>
+                </table>
+            </div>
+
+            <div class="col-md-6">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col-8">Estaciones SIRGAS de operación continua</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td scope="row">
+                                
+                                <!--Mapa Sinergas -->
+
+                                <div class="col-4">
+                                
+                                <div id="map" class="map" style='height: 400px; width:400 px;'>
+                                </div>
+
+                                <!-- Modal Loading-->
+                                <div class="modal" id="modal_loading" role="dialog">
+                                    <div class="modal-dialog" style='width:450px; text-align:left;  margin-top: 5%;'>
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            
+                                            <div class="modal-body noselect" style='text-align:left;'>
+                                                <div id="modal-content-html" style="overflow-y:scroll; overflow-x: hidden; height:500px;">Loading ... </div>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+
+
+                              </div>
+                            </div>
+
+
+                            </div>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td scope="row">
+                            <i style=" font-size: small"> Información de referencia proporcionada por SIRGAS Analysis Centre at DGFI-TUM (Deutsches Geodätisches Forschungsinstitut, Technische Universität München), <a href="https://www.sirgas.org/">https://www.sirgas.org/</a> </i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="popup" class="popup" >
+        <div id="popup-content" class="popup-content">
+
+            <div id="div_mensaje_emergente">
+                <h4 id="titulo_mensaje">Titulo Emergente</h4>
+
+                <div class="form-group">
+                  <label id="texto_mensaje">Texto Mensaje Emergente</label>
+                </div>
+
+            </div>
+            
+            <div>
+                <button class="btn btn-primary" onclick="cerrarPopup()">Cerrar</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var CSRF_TOKEN = '{{ csrf_token }}'
+        var url_search_data_productos_troposfericos = "{% url 'api_search_data_productos_troposfericos' %}"
+        var url_estaciones_disponibles =  "{% url 'api_estaciones_disponibles' %}"
+        var src_image_punto_rojo = "{% static 'img/marker_red.png' %}"
+    </script>
+
+</body>
+
+</html>
